@@ -1,38 +1,63 @@
 # Node.js
 node_modules/
 dist/
-.env
-npm-debug.log
-yarn-debug.log
-yarn-error.log
-.pnpm-debug.log
-.DS_Store
-*.log*
-
-# NestJS specific (if generated files are not meant to be committed, though generally they are)
-/src/**/*.js
-/src/**/*.js.map
-/src/**/*.d.ts
-/src/**/*.d.ts.map
-
-# VS Code
-.vscode/
-
-# OS generated files
-.DS_Store
-.idea/
-.project
-.classpath
-.settings/
-*.sublime-project
-*.sublime-workspace
-
-# Database specific (if you have local DB files, e.g., sqlite)
-*.sqlite
-*.sqlite-journal
+build/
 
 # Compiled output for frontend (if you add Next.js later)
 .next/
 out/
 
-# Add any other temporary or sensitive files
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log*
+logs/
+
+# Environment files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Generated NestJS / TypeScript artifacts
+/src/**/*.js
+/src/**/*.js.map
+/src/**/*.d.ts
+/src/**/*.d.ts.map
+
+# Coverage and test outputs
+/coverage
+/.nyc_output
+
+# OS files
+.DS_Store
+.temp
+.tmp
+
+# IDE / editor
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+.project
+.classpath
+.settings/
+/*.sublime-project
+/*.sublime-workspace
+.c9/
+
+# Database files
+*.sqlite
+*.sqlite-journal
+pids/
+*.pid
+*.pid.lock
+*.seed
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
