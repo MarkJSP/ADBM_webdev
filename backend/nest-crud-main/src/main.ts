@@ -1,30 +1,27 @@
+// Path: backend/src/main.ts
+
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { NestFactory }     from '@nestjs/core';
+import { AppModule }       from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS so your Next.js frontend (usually on port 3001) can call the API
+  // Allow your Next.js front‑end (on e.g. http://localhost:3002) to call this API
   app.enableCors({
-    origin: 'http://localhost:3001',
+    origin: 'http://localhost:3002',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  // Global validation pipe: strips unknown props and transforms payloads to DTO classes
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    forbidNonWhitelisted: true,
+  }));
 
-  // Listen on port 3000 (or override with PORT env var)
-  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-  await app.listen(port);
-  console.log(`🚀 Backend listening on http://localhost:${port}`);
+  await app.listen(3000);
+  console.log(`🚀 Backend listening on http://localhost:3000`);
 }
 
 bootstrap();

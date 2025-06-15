@@ -1,52 +1,49 @@
-// src/app.module.ts
+// Path: backend/src/app.module.ts
 
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { AppController } from './app.controller';
 import { AppService }    from './app.service';
-import { StudentsModule } from './students/students.module';
 
-import { AcademicLevel } from './entities/academic-level.entity';
 import { Student }       from './entities/student.entity';
+import { AcademicLevel } from './entities/academic-level.entity';
 import { StudentGpa }    from './entities/student-gpa.entity';
+
+import { StudentsModule } from './students/students.module';
 
 @Module({
   imports: [
-    // 1) Load environment variables globally
+    // 1) Load .env into process.env
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
     }),
 
-    // 2) Configure TypeORM with SnakeNamingStrategy
+    // 2) TypeORM setup
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject:  [ConfigService],
       useFactory: (config: ConfigService) => ({
         type:       'mysql',
-        host:       config.get<string>('DATABASE_HOST', 'localhost'),
-        port:       config.get<number>('DATABASE_PORT', 3306),
-        username:   config.get<string>('DATABASE_USERNAME', 'root'),
-        password:   config.get<string>('DATABASE_PASSWORD', ''),
-        database:   config.get<string>('DATABASE_NAME', 'student_db'),
+        host:       config.get<string>('DB_HOST', 'localhost'),
+        port:       config.get<number>('DB_PORT', 3306),
+        username:   config.get<string>('DB_USER', 'root'),
+        password:   config.get<string>('DB_PASSWORD', ''),
+        database:   config.get<string>('DB_NAME', 'student_db'),
         entities:   [AcademicLevel, Student, StudentGpa],
-        synchronize: false,
+        synchronize: false,            // use migrations in production
         logging:     true,
         namingStrategy: new SnakeNamingStrategy(),
       }),
     }),
 
-    // 3) Register the Students feature module
+    // 3) Feature module for /student endpoints
     StudentsModule,
   ],
-  controllers: [
-    AppController,   // only the root controller
-  ],
-  providers: [
-    AppService,      // only the root service
-  ],
+  controllers: [AppController],
+  providers:   [AppService],
 })
 export class AppModule {}

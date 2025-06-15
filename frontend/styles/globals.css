@@ -1,0 +1,29 @@
+/* frontend/styles/globals.css */
+
+/* Box sizing and remove default margin */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Apply a comfortable font and background */
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  background: #f9f9f9;
+  color: #333;
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Content wrapper */
+main {
+  padding: 1rem;
+}

@@ -1,8 +1,10 @@
+// Path: backend/src/students/students.controller.ts
+
 import {
   Controller,
   Get,
   Post,
-  Patch,
+  Put,
   Delete,
   Param,
   Body,
@@ -12,7 +14,7 @@ import { StudentsService } from './students.service';
 import { CreateStudentDto } from './create-student.dto';
 import { UpdateStudentDto } from './update-student.dto';
 
-@Controller('students')
+@Controller('student')
 export class StudentsController {
   constructor(private readonly svc: StudentsService) {}
 
@@ -26,12 +28,7 @@ export class StudentsController {
     return this.svc.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.svc.findOne(id);
-  }
-
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateStudentDto,
