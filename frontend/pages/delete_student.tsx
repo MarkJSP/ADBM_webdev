@@ -1,36 +1,77 @@
-// frontend/pages/delete_student.tsx
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { getAllStudents, deleteStudent, Student } from '../lib/students';
+import { FaTrash, FaSearch } from 'react-icons/fa';
+import { api } from '../lib/api';
+import type { Student } from '../types';
+import styles from './delete_student.module.css';
 
 export default function DeleteStudent() {
-  const { query, push } = useRouter();
-  const id = typeof query.id === 'string' ? parseInt(query.id, 10) : null;
-  const [students, setStudents] = useState<Student[]>([]);
+  const [all, setAll] = useState<Student[]>([]);
+  const [filtered, setFiltered] = useState<Student[]>([]);
+  const [search, setSearch] = useState('');
 
-  const reload = () => getAllStudents().then(r => setStudents(r.data));
-  useEffect(reload, []);
+  useEffect(() => {
+    api.get('/students').then(res => {
+      setAll(res.data);
+      setFiltered(res.data);
+    });
+  }, []);
 
-  const onDelete = async (sid: number) => {
-    if (!confirm(`Delete student #${sid}?`)) return;
-    await deleteStudent(sid);
-    reload();
-    if (sid === id) push('/get_student');
+  useEffect(() => {
+    const term = search.toLowerCase();
+    setFiltered(
+      all.filter(
+        s =>
+          s.id.toString().includes(term) ||
+          s.firstName.toLowerCase().includes(term) ||
+          s.lastName.toLowerCase().includes(term)
+      )
+    );
+  }, [search, all]);
+
+  const remove = async (id: number) => {
+    await api.delete(`/students/${id}`);
+    const updated = all.filter(s => s.id !== id);
+    setAll(updated);
+    setFiltered(
+      updated.filter(
+        s =>
+          s.id.toString().includes(search.toLowerCase()) ||
+          s.firstName.toLowerCase().includes(search.toLowerCase()) ||
+          s.lastName.toLowerCase().includes(search.toLowerCase())
+      )
+    );
   };
 
   return (
-    <main style={{ maxWidth: 600, margin: '2rem auto' }}>
-      <h1>Delete Students</h1>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {students.map(s => (
-          <li key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '.5rem 0', borderBottom: '1px solid #ddd' }}>
-            {s.firstName} {s.lastName}
-            <button onClick={() => onDelete(s.id!)} style={{ background: '#c00', color: '#fff', border: 'none', padding: '.3rem .6rem', borderRadius: 4 }}>
+    <div className={styles.wrapper}>
+      <div className={styles.header}>
+        <FaTrash className={styles.icon} />
+        <span className={styles.title}>Delete Students</span>
+      </div>
+
+      <div className={styles.searchBar}>
+        <FaSearch className={styles.searchIcon} />
+        <input
+          className={styles.searchInput}
+          placeholder="Search by ID, name…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      <ul className={styles.list}>
+        {filtered.map(s => (
+          <li key={s.id} className={styles.item}>
+            <span>#{s.id} – {s.firstName} {s.lastName}</span>
+            <button onClick={() => remove(s.id)} className={styles.button}>
               Delete
             </button>
           </li>
         ))}
+        {filtered.length === 0 && (
+          <li className={styles.empty}>No matching students.</li>
+        )}
       </ul>
-    </main>
+    </div>
   );
 }

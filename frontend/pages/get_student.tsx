@@ -1,40 +1,66 @@
 // frontend/pages/get_student.tsx
+
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { getAllStudents, Student } from '../lib/students';
+import { FaList, FaSearch } from 'react-icons/fa';
+import { api } from '../lib/api';
+import type { Student } from '../types';
+import styles from './get_student.module.css';
 
 export default function GetStudents() {
-  const [students, setStudents] = useState<Student[] | null>(null);
+  const [all, setAll] = useState<Student[]>([]);
+  const [filtered, setFiltered] = useState<Student[]>([]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    getAllStudents().then(res => setStudents(res.data));
+    api.get<Student[]>('/students')
+      .then(res => {
+        setAll(res.data);
+        setFiltered(res.data);
+      })
+      .catch(console.error);
   }, []);
 
-  if (students === null) {
-    return <p style={{ textAlign: 'center' }}>Loading…</p>;
-  }
-  if (students.length === 0) {
-    return (
-      <main style={{ textAlign: 'center', marginTop: '2rem' }}>
-        <h1>No students found</h1>
-        <Link href="/post_student"><a>Create one</a></Link>
-      </main>
+  useEffect(() => {
+    const term = search.toLowerCase();
+    setFiltered(
+      all.filter(s =>
+        s.id.toString().includes(term) ||
+        s.firstName.toLowerCase().includes(term) ||
+        s.lastName.toLowerCase().includes(term)
+      )
     );
-  }
+  }, [search, all]);
 
   return (
-    <main style={{ maxWidth: 600, margin: '2rem auto' }}>
-      <h1>All Students</h1>
-      <Link href="/post_student"><a>Create New</a></Link>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {students.map(s => (
-          <li key={s.id} style={{ margin: '.5rem 0', borderBottom: '1px solid #ddd', paddingBottom: '.5rem' }}>
-            #{s.id} – {s.firstName} {s.lastName} ({s.email})
-            {' ['}<Link href={`/update_student?id=${s.id}`}><a>Edit</a></Link>{']'}
-            {' ['}<Link href={`/delete_student?id=${s.id}`}><a>Delete</a></Link>{']'}
+    <div className={styles.wrapper}>
+      <div className={styles.header}>
+        <FaList className={styles.icon} />
+        <span className={styles.title}>All Students</span>
+      </div>
+
+      <div className={styles.searchBar}>
+        <FaSearch className={styles.searchIcon} />
+        <input
+          className={styles.searchInput}
+          placeholder="Search by ID, name…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      <ul className={styles.list}>
+        {filtered.map(s => (
+          <li key={s.id} className={styles.item}>
+            <div>
+              <strong>#{s.id}</strong> – {s.firstName} {s.lastName}
+            </div>
+            {/* Removed actions/edit/delete links */}
           </li>
         ))}
+        {filtered.length === 0 && (
+          <li className={styles.empty}>No matching students.</li>
+        )}
       </ul>
-    </main>
+    </div>
   );
 }

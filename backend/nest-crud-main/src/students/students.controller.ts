@@ -1,20 +1,20 @@
-// Path: backend/src/students/students.controller.ts
+// backend/nest-crud-main/src/students/students.controller.ts
 
 import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Param,
   Body,
   ParseIntPipe,
 } from '@nestjs/common';
-import { StudentsService } from './students.service';
-import { CreateStudentDto } from './create-student.dto';
-import { UpdateStudentDto } from './update-student.dto';
+import { StudentsService }    from './students.service';
+import { CreateStudentDto }   from './dto/create-student.dto';
+import { UpdateStudentDto }   from './dto/update-student.dto';
 
-@Controller('student')
+@Controller('students')
 export class StudentsController {
   constructor(private readonly svc: StudentsService) {}
 
@@ -28,7 +28,12 @@ export class StudentsController {
     return this.svc.findAll();
   }
 
-  @Put(':id')
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.svc.findOne(id);
+  }
+
+  @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateStudentDto,

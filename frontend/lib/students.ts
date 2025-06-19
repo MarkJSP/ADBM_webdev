@@ -16,3 +16,4 @@ export const deleteStudent     = (id: number) => api.delete<void>(`/students/${i
 
 // ACADEMIC LEVELS
 export const getAcademicLevels = () => api.get<{ id: number; level: string }[]>('/academic-levels');
+export type { Student }

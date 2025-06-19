@@ -1,0 +1,73 @@
+/* frontend/components/layout.module.css */
+
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.sidebar {
+  width: 240px;
+  background: #1e293b;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.navLink:hover {
+  background: #334155;
+}
+
+.icon {
+  font-size: 1.2rem;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #1e293b;
+}
+
+.content {
+  padding: 2rem;
+  background: #f5f7fa;
+  flex: 1;
+}

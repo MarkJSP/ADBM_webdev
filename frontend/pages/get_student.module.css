@@ -1,0 +1,68 @@
+/* frontend/pages/get_student.module.css */
+
+.wrapper {
+  max-width: 48rem;
+  margin: 2rem auto;
+  background: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.wrapper .header {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.wrapper .icon {
+  color: #3b82f6; /* blue-500 */
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+}
+
+.wrapper .title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.wrapper .searchBar {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.wrapper .searchIcon {
+  color: #6b7280; /* gray-500 */
+  margin-right: 0.5rem;
+}
+
+.wrapper .searchInput {
+  border: none;
+  background: transparent;
+  flex: 1;
+  outline: none;
+  font-size: 1rem;
+}
+
+.wrapper .list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper .item {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.wrapper .empty {
+  padding: 1.5rem;
+  text-align: center;
+  color: #6b7280;
+}

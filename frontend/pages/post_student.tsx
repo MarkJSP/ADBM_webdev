@@ -1,98 +1,170 @@
 // frontend/pages/post_student.tsx
+
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
-import axios from 'axios';
-import { createStudent, Student } from '../lib/students';
-
-interface AcademicLevel {
-  id: number;
-  level: string;
-}
+import { FaPlusCircle } from 'react-icons/fa';
+import { api } from '../lib/api';
+import type { CreateStudentDto, AcademicLevel } from '../types';
+import styles from './post_student.module.css';
 
 export default function PostStudent() {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Student>();
-  const [levels, setLevels] = useState<AcademicLevel[]>([]);
-  const router = useRouter();
+  // Set up react-hook-form, no defaultValues
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateStudentDto>();
 
+  const [levels, setLevels] = useState<AcademicLevel[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load academic levels once
   useEffect(() => {
-    axios.get<AcademicLevel[]>(`${process.env.NEXT_PUBLIC_API_URL}/academic-levels`)
+    api
+      .get<AcademicLevel[]>('/academic-levels')
       .then(res => setLevels(res.data))
-      .catch(console.error);
+      .catch(err => {
+        console.error('Could not load levels', err);
+        alert('Error loading academic levels. Is the backend running?');
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  const onSubmit = async (data: Student) => {
-    await createStudent(data);
-    router.push('/get_student');
+  // Submit handler
+  const onSubmit = async (data: CreateStudentDto) => {
+    console.log('Submitting', data);
+    try {
+      // We only have academicLevelId here
+      await api.post('/students', data);
+      alert('Student created successfully!');
+      reset();
+    } catch (err: any) {
+      console.error('Create error', err);
+      alert(`Error creating student: ${err.response?.data?.message || err.message}`);
+    }
   };
 
+  if (loading) {
+    return <p className={styles.loading}>Loading levels…</p>;
+  }
+
   return (
-    <main className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl mb-4">Create Student</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block font-medium">First Name</label>
-          <input
-            {...register('firstName', { required: 'First name is required' })}
-            className="w-full border p-2 rounded"
-          />
-          {errors.firstName && <p className="text-red-600">{errors.firstName.message}</p>}
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <FaPlusCircle className={styles.icon} />
+        <h3 className={styles.title}>Add New Student</h3>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+        {/* First & Last Name */}
+        <div className={styles.grid2}>
+          <div className={styles.field}>
+            <label className={styles.label}>First Name</label>
+            <input
+              {...register('firstName', { required: 'Required' })}
+              className={styles.input}
+            />
+            {errors.firstName && <p className={styles.error}>{errors.firstName.message}</p>}
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Last Name</label>
+            <input
+              {...register('lastName', { required: 'Required' })}
+              className={styles.input}
+            />
+            {errors.lastName && <p className={styles.error}>{errors.lastName.message}</p>}
+          </div>
         </div>
 
-        <div>
-          <label className="block font-medium">Last Name</label>
-          <input
-            {...register('lastName', { required: 'Last name is required' })}
-            className="w-full border p-2 rounded"
-          />
-          {errors.lastName && <p className="text-red-600">{errors.lastName.message}</p>}
-        </div>
-
-        <div>
-          <label className="block font-medium">Email</label>
+        {/* Email */}
+        <div className={styles.field}>
+          <label className={styles.label}>Email</label>
           <input
             {...register('email', {
-              required: 'Email is required',
-              pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' }
+              required: 'Required',
+              pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' },
             })}
-            className="w-full border p-2 rounded"
             type="email"
+            className={styles.input}
           />
-          {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+          {errors.email && <p className={styles.error}>{errors.email.message}</p>}
         </div>
 
-        <div>
-          <label className="block font-medium">Date of Birth</label>
+        {/* Date of Birth */}
+        <div className={styles.field}>
+          <label className={styles.label}>Date of Birth</label>
           <input
-            {...register('dateOfBirth', { required: 'Date of birth is required' })}
-            className="w-full border p-2 rounded"
+            {...register('dateOfBirth', { required: 'Required' })}
             type="date"
+            className={styles.input}
           />
-          {errors.dateOfBirth && <p className="text-red-600">{errors.dateOfBirth.message}</p>}
+          {errors.dateOfBirth && <p className={styles.error}>{errors.dateOfBirth.message}</p>}
         </div>
 
-        <div>
-          <label className="block font-medium">Academic Level</label>
+        {/* Gender & Phone */}
+        <div className={styles.grid2}>
+          <div className={styles.field}>
+            <label className={styles.label}>Gender</label>
+            <select {...register('gender')} className={styles.select}>
+              <option value="">Unspecified</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+              <option value="X">Other</option>
+            </select>
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Phone</label>
+            <input {...register('phone')} type="tel" className={styles.input} />
+          </div>
+        </div>
+
+        {/* Address */}
+        <div className={styles.field}>
+          <label className={styles.label}>Address</label>
+          <input {...register('address')} className={styles.input} />
+        </div>
+
+        {/* Enrollment & Major */}
+        <div className={styles.grid2}>
+          <div className={styles.field}>
+            <label className={styles.label}>Enrollment Date</label>
+            <input
+              {...register('enrollmentDate')}
+              type="date"
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Major</label>
+            <input {...register('major')} className={styles.input} />
+          </div>
+        </div>
+
+        {/* Academic Level */}
+        <div className={styles.field}>
+          <label className={styles.label}>Academic Level</label>
           <select
-            {...register('academicLevelId', { required: 'Please select a level', valueAsNumber: true })}
-            className="w-full border p-2 rounded"
+            {...register('academicLevelId', {
+              required: 'Please select a level',
+              valueAsNumber: true,
+            })}
+            className={styles.select}
           >
             <option value="">Select Level</option>
             {levels.map(l => (
-              <option key={l.id} value={l.id}>{l.level}</option>
+              <option key={l.id} value={l.id}>
+                {l.level}
+              </option>
             ))}
           </select>
-          {errors.academicLevelId && <p className="text-red-600">{errors.academicLevelId.message}</p>}
+          {errors.academicLevelId && <p className={styles.error}>{errors.academicLevelId.message}</p>}
         </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {isSubmitting ? 'Submitting...' : 'Submit'}
+        <button type="submit" disabled={isSubmitting} className={styles.submit}>
+          {isSubmitting ? 'Submitting…' : 'Create Student'}
         </button>
       </form>
-    </main>
+    </div>
   );
 }

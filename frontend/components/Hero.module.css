@@ -1,0 +1,36 @@
+/* Hero.module.css */
+
+.hero {
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.heroInner {
+  max-width: 64rem; /* 4xl */
+  margin: 0 auto;
+  padding: 5rem 1.5rem; /* py-20 px-6 */
+  text-align: center;
+}
+
+.title {
+  font-size: 3.75rem; /* text-6xl */
+  font-weight: 800;
+  color: #1f2937; /* gray-900 */
+  margin-bottom: 1.5rem; /* mb-6 */
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-size: 1.25rem; /* text-xl */
+  color: #4b5563; /* gray-700 */
+  margin-bottom: 2.5rem; /* mb-10 */
+  max-width: 48rem; /* max-w-3xl */
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.75; /* leading-relaxed */
+}
+
+.controls {
+  display: inline-flex;
+  gap: 1rem; /* space-x-4 */
+}

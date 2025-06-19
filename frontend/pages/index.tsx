@@ -1,10 +1,18 @@
-// frontend/pages/index.tsx
+import Link from 'next/link';
+import { Hero } from '../components/Hero';
 
 export default function HomePage() {
   return (
-    <div style={{ textAlign: 'center', marginTop: '3rem' }}>
-      <h1>Welcome to the Student Management System</h1>
-      <p>Select an option from the navigation bar above.</p>
-    </div>
+    <Hero
+      title="Welcome to Student Manager"
+      subtitle="Manage your students easily: create, view, update, and delete records."
+    >
+      <Link
+        href="/post_student"
+        className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition"
+      >
+        Create Student
+      </Link>
+    </Hero>
   );
 }

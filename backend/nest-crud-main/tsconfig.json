@@ -17,5 +17,8 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  // <<< Only compile Nest’s own source files
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "../frontend", "**/*.tsx", "**/*.jsx"]
 }

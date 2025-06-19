@@ -24,15 +24,8 @@ export function Nav() {
         const isActive = pathname === link.href;
         return (
           <Link key={link.href} href={link.href}>
-            <a style={{
-              textDecoration: isActive ? 'underline' : 'none',
-              fontWeight:      isActive ? 'bold'      : 'normal',
-              color:           isActive ? '#0070f3'   : '#000',
-            }}>
               {link.label}
-            </a>
-          </Link>
-        );
+            </Link>        );
       })}
     </nav>
   );
